@@ -44,7 +44,9 @@ class CxTowerPlanLine(models.Model):
         help="Actions trigger based on command result."
         " If empty next command will be executed",
     )
-    command_code = fields.Text(related="command_id.code", readonly=True)
+    command_code = fields.Text(
+        string="Code", compute="_compute_command_code", readonly=True
+    )
     action = fields.Selection(related="command_id.action", readonly=True)
     tag_ids = fields.Many2many(related="command_id.tag_ids", readonly=True)
     access_level = fields.Selection(
@@ -87,6 +89,25 @@ class CxTowerPlanLine(models.Model):
         for line in self:
             visited_plans = set()
             self._check_recursive_plan(line.command_id, visited_plans)
+
+    @api.depends("command_id", "action")
+    def _compute_command_code(self):
+        """
+        Compute the preview of the command based on its action.
+        """
+        for line in self:
+            if line.action == "file_using_template":
+                line.command_code = line.command_id.code or "No template code available"
+            elif line.action == "plan":
+                flight_plan_lines = line.command_id.flight_plan_id.line_ids
+                preview_lines = [line.name for line in flight_plan_lines]
+                line.command_code = (
+                    "\n".join(preview_lines)
+                    if preview_lines
+                    else "No related lines available"
+                )
+            else:
+                line.command_code = "No preview available"
 
     def _check_recursive_plan(self, command, visited_plans):
         """

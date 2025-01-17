@@ -11,6 +11,7 @@
                 <field name="tag_ids" />
                 <field name="os_id" />
                 <field name="color" />
+                <field name="server_count" />
                 <templates>
                     <t t-name="kanban-box">
                     <div
@@ -56,7 +57,10 @@
                             <div class="oe_kanban_global_click">
                                 <div class="col-12 pt8 o_kanban_primary_right">
                                     <div>
-                                        <field name="reference" />
+                                        <strong>Servers:</strong>
+                                        <span class="badge badge-primary">
+                                            <t t-esc="record.server_count.value" />
+                                        </span>
                                     </div>
                                     <div attrs="{'invisible': [('os_id', '=', False)]}">
                                         <strong>Operating System:</strong>

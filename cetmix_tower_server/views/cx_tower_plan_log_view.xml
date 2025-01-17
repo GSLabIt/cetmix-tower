@@ -81,6 +81,7 @@
         <field name="model">cx.tower.plan.log</field>
         <field name="arch" type="xml">
             <tree
+                default_order="start_date desc, id desc"
                 decoration-danger="plan_status != 0"
                 decoration-info="is_running == True"
             >

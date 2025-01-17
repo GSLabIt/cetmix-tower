@@ -74,6 +74,13 @@
                             <field name="duration_current" />
                         </group>
                     </group>
+                    <group>
+                        <field name="plan_log_id" />
+                        <field name="plan_start_date" string="Plan Start Date" />
+                        <field name="plan_finish_date" string="Plan Finish Date" />
+                        <field name="plan_status" string="Plan Status" />
+                        <field name="plan_is_running" string="Plan Running" />
+                    </group>
                     <notebook attrs="{'invisible': [('command_action', '=', 'plan')]}">
                         <page name="result" string="Result">
                             <field
@@ -99,7 +106,7 @@
         <field name="model">cx.tower.command.log</field>
         <field name="arch" type="xml">
             <tree
-                default_order="id"
+                default_order="start_date desc, id desc"
                 decoration-danger="command_status not in [0, -20]"
                 decoration-info="is_running == True"
                 decoration-muted="command_status == -20"
