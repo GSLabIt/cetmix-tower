@@ -75,11 +75,30 @@
                         </group>
                     </group>
                     <group>
-                        <field name="plan_log_id" />
-                        <field name="plan_start_date" string="Plan Start Date" />
-                        <field name="plan_finish_date" string="Plan Finish Date" />
-                        <field name="plan_status" string="Plan Status" />
-                        <field name="plan_is_running" string="Plan Running" />
+                        <field
+                            name="plan_log_id"
+                            attrs="{'invisible': [('plan_log_id', '=', False)]}"
+                        />
+                        <field
+                            name="plan_start_date"
+                            string="Plan Start Date"
+                            attrs="{'invisible': [('plan_log_id', '=', False)]}"
+                        />
+                        <field
+                            name="plan_finish_date"
+                            string="Plan Finish Date"
+                            attrs="{'invisible': [('plan_log_id', '=', False)]}"
+                        />
+                        <field
+                            name="plan_status"
+                            string="Plan Status"
+                            attrs="{'invisible': [('plan_log_id', '=', False)]}"
+                        />
+                        <field
+                            name="plan_is_running"
+                            string="Plan Running"
+                            attrs="{'invisible': [('plan_log_id', '=', False)]}"
+                        />
                     </group>
                     <notebook attrs="{'invisible': [('command_action', '=', 'plan')]}">
                         <page name="result" string="Result">

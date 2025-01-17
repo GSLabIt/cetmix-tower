@@ -38,7 +38,15 @@
                     <notebook>
                         <page name="preview" string="Command Preview">
                             <group>
-                                <field name="command_code" />
+                                <field name="action" />
+                                <field
+                                    name="command_code"
+                                    attrs="{'invisible': [('action', '=', 'plan')]}"
+                                />
+                                <field
+                                    name="plan_line_ids"
+                                    attrs="{'invisible': [('action', '!=', 'plan')]}"
+                                />
                             </group>
                         </page>
                         <page name="actions" string="Post Run Actions">

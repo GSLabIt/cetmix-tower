@@ -47,6 +47,12 @@ class CxTowerPlanLine(models.Model):
     command_code = fields.Text(
         string="Code", compute="_compute_command_code", readonly=True
     )
+    plan_line_ids = fields.One2many(
+        comodel_name="cx.tower.plan.line",
+        compute="_compute_plan_line_ids",
+        string="Plan Lines",
+        readonly=True,
+    )
     action = fields.Selection(related="command_id.action", readonly=True)
     tag_ids = fields.Many2many(related="command_id.tag_ids", readonly=True)
     access_level = fields.Selection(
@@ -99,15 +105,21 @@ class CxTowerPlanLine(models.Model):
             if line.action == "file_using_template":
                 line.command_code = line.command_id.code or "No template code available"
             elif line.action == "plan":
-                flight_plan_lines = line.command_id.flight_plan_id.line_ids
-                preview_lines = [line.name for line in flight_plan_lines]
-                line.command_code = (
-                    "\n".join(preview_lines)
-                    if preview_lines
-                    else "No related lines available"
-                )
-            else:
+                line.command_code = False
+            elif line.action != "plan":
                 line.command_code = "No preview available"
+
+    @api.depends("command_id", "action")
+    def _compute_plan_line_ids(self):
+        """
+        Compute the related plan lines if the action is "plan".
+        """
+        for line in self:
+            if line.action == "plan":
+                flight_plan = line.command_id.flight_plan_id
+                line.plan_line_ids = flight_plan.line_ids if flight_plan else []
+            else:
+                line.plan_line_ids = False
 
     def _check_recursive_plan(self, command, visited_plans):
         """
