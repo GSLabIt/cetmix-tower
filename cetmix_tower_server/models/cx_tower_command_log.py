@@ -60,20 +60,6 @@ class CxTowerCommandLog(models.Model):
     plan_log_id = fields.Many2one(comodel_name="cx.tower.plan.log", ondelete="cascade")
     triggered_plan_log_id = fields.Many2one(comodel_name="cx.tower.plan.log")
 
-    # -- Related fields for plan_log_id
-    plan_start_date = fields.Datetime(
-        related="plan_log_id.start_date", store=True, string="Plan Start Date"
-    )
-    plan_finish_date = fields.Datetime(
-        related="plan_log_id.finish_date", store=True, string="Plan Finish Date"
-    )
-    plan_status = fields.Integer(
-        related="plan_log_id.plan_status", store=True, string="Plan Status"
-    )
-    plan_is_running = fields.Boolean(
-        related="plan_log_id.is_running", store=True, string="Plan Running"
-    )
-
     @api.depends("name", "command_id.name")
     def _compute_name(self):
         for rec in self:

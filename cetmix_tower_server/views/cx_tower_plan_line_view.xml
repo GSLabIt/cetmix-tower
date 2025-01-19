@@ -41,7 +41,7 @@
                                 <field name="action" />
                                 <field
                                     name="command_code"
-                                    attrs="{'invisible': [('action', '=', 'plan')]}"
+                                    attrs="{'invisible': [('action', 'not in', ['ssh_command', 'python_code'])]}"
                                 />
                                 <field
                                     name="plan_line_ids"

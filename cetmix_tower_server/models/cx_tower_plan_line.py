@@ -45,11 +45,11 @@ class CxTowerPlanLine(models.Model):
         " If empty next command will be executed",
     )
     command_code = fields.Text(
-        string="Code", compute="_compute_command_code", readonly=True
+        comodel_name="cx.tower.command", string="Code", readonly=True
     )
     plan_line_ids = fields.One2many(
         comodel_name="cx.tower.plan.line",
-        compute="_compute_plan_line_ids",
+        inverse_name="command_id",
         string="Plan Lines",
         readonly=True,
     )
@@ -95,31 +95,6 @@ class CxTowerPlanLine(models.Model):
         for line in self:
             visited_plans = set()
             self._check_recursive_plan(line.command_id, visited_plans)
-
-    @api.depends("command_id", "action")
-    def _compute_command_code(self):
-        """
-        Compute the preview of the command based on its action.
-        """
-        for line in self:
-            if line.action == "file_using_template":
-                line.command_code = line.command_id.code or "No template code available"
-            elif line.action == "plan":
-                line.command_code = False
-            elif line.action != "plan":
-                line.command_code = "No preview available"
-
-    @api.depends("command_id", "action")
-    def _compute_plan_line_ids(self):
-        """
-        Compute the related plan lines if the action is "plan".
-        """
-        for line in self:
-            if line.action == "plan":
-                flight_plan = line.command_id.flight_plan_id
-                line.plan_line_ids = flight_plan.line_ids if flight_plan else []
-            else:
-                line.plan_line_ids = False
 
     def _check_recursive_plan(self, command, visited_plans):
         """
